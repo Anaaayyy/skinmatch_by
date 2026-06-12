@@ -1,0 +1,621 @@
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.gentium-plus-regular {
+  font-family: "Gentium Plus", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.gentium-plus-bold {
+  font-family: "Gentium Plus", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.gentium-plus-regular-italic {
+  font-family: "Gentium Plus", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.gentium-plus-bold-italic {
+  font-family: "Gentium Plus", serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+
+@layer base {
+  body {
+    font-family: 'Gentium Plus', serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Gentium Plus', serif;
+    font-weight: 700;
+  }
+}
+
+@layer components {
+  .container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Gentium Plus', serif;
+  }
+  
+  .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+  
+  .btn-outline {
+    border-width: 2px;
+    border-color: #ec4899;
+    color: #ec4899;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Gentium Plus', serif;
+  }
+  
+  .btn-outline:hover {
+    background-color: #fdf2f8;
+  }
+  
+  .section-title {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-family: 'Gentium Plus', serif;
+  }
+  
+  @media (min-width: 768px) {
+    .section-title {
+      font-size: 3rem;
+      line-height: 1;
+    }
+  }
+  
+  .section-subtitle {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: rgb(107 114 128);
+    text-align: center;
+    margin-bottom: 3rem;
+    font-weight: 400;
+    font-family: 'Gentium Plus', serif;
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .hero-gradient {
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+  }
+}
+
+/* Стили для Swiper карусели */
+.swiper {
+  padding-bottom: 40px !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #db2777 !important;
+  background: white;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 18px !important;
+  font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: #db2777 !important;
+  color: white !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #db2777 !important;
+}
+
+.swiper-pagination-bullet {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ==================== СТРАНИЦА ТОВАРА ==================== */
+.product-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.product-breadcrumbs {
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #6b7280;
+  font-family: 'Gentium Plus', serif;
+}
+.product-breadcrumbs a {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.product-breadcrumbs a:hover {
+  color: #db2777;
+}
+.product-breadcrumbs span {
+  color: #1f2937;
+}
+
+.product-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.product-main-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.product-main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.product-main-image span {
+  font-size: 80px;
+}
+.product-zoom-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'Gentium Plus', serif;
+}
+.product-thumbnails {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.product-thumbnail {
+  width: 80px;
+  height: 80px;
+  background-color: #f3f4f6;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+.product-thumbnail:hover {
+  transform: scale(1.05);
+}
+.product-thumbnail.active {
+  border: 2px solid #db2777;
+}
+.product-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.product-brand {
+  font-size: 14px;
+  color: #db2777;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Gentium Plus', serif;
+}
+.product-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  font-family: 'Gentium Plus', serif;
+}
+.product-rating-volume {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #fef3c7;
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+.product-rating span:first-child {
+  font-size: 14px;
+}
+.product-rating span:nth-child(2) {
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+}
+.product-rating span:last-child {
+  font-size: 12px;
+  color: #92400e;
+}
+.product-volume {
+  background-color: #f3f4f6;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 14px;
+  color: #4b5563;
+  font-family: 'Gentium Plus', serif;
+}
+.product-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #1f2937;
+  font-family: 'Gentium Plus', serif;
+}
+.product-description p,
+.product-how-to-use p {
+  color: #4b5563;
+  line-height: 1.6;
+  font-size: 15px;
+  font-family: 'Gentium Plus', serif;
+}
+.product-characteristics {
+  background-color: #f9fafb;
+  border-radius: 16px;
+  padding: 16px;
+}
+.product-char-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-family: 'Gentium Plus', serif;
+}
+.product-char-item:last-child {
+  border-bottom: none;
+}
+.product-char-item span:first-child {
+  color: #6b7280;
+}
+.product-char-item span:last-child {
+  font-weight: 500;
+  color: #1f2937;
+}
+.product-problems-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.product-problems-list span {
+  background-color: #fdf2f8;
+  color: #db2777;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Gentium Plus', serif;
+}
+.product-ingredients div {
+  background-color: #f9fafb;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4b5563;
+  font-family: 'Gentium Plus', serif;
+}
+.product-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.product-actions button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  transition: all 0.2s;
+  font-family: 'Gentium Plus', serif;
+}
+.product-actions button:hover {
+  transform: translateY(-2px);
+}
+.product-favorite {
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  color: #db2777;
+}
+.product-favorite.active {
+  border-color: #db2777;
+  background-color: #fdf2f8;
+}
+.product-compare {
+  border: 2px solid #e5e7eb;
+  background-color: white;
+  color: #db2777;
+}
+.product-compare.active {
+  border-color: #db2777;
+  background-color: #fdf2f8;
+}
+
+.similar-products {
+  margin-top: 60px;
+}
+.similar-products h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  font-family: 'Gentium Plus', serif;
+}
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.similar-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.similar-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+.similar-image {
+  height: 150px;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.similar-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.similar-image span {
+  font-size: 48px;
+}
+.similar-info {
+  padding: 12px;
+}
+.similar-brand {
+  font-size: 12px;
+  color: #db2777;
+  margin-bottom: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Gentium Plus', serif;
+}
+.similar-info h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1f2937;
+  line-height: 1.3;
+  font-family: 'Gentium Plus', serif;
+}
+.similar-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  font-family: 'Gentium Plus', serif;
+}
+
+.product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.95);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.product-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+}
+.product-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+.product-modal-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.product-modal-close:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .product-page-container {
+    padding: 20px 16px;
+  }
+  .product-breadcrumbs {
+    font-size: 12px;
+    margin-bottom: 16px;
+    white-space: nowrap;
+    overflow-x: auto;
+  }
+  .product-main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .product-main-image span {
+    font-size: 60px;
+  }
+  .product-thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+  .product-title {
+    font-size: 24px;
+  }
+  .product-section-title {
+    font-size: 16px;
+  }
+  .product-description p,
+  .product-how-to-use p {
+    font-size: 14px;
+  }
+  .similar-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .similar-image {
+    height: 120px;
+  }
+  .similar-info h3 {
+    font-size: 12px;
+  }
+  .product-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .product-actions button {
+    padding: 12px;
+  }
+}
+
+@media (min-width: 769px) {
+  .product-actions {
+    flex-direction: row;
+  }
+}
+
+
+
