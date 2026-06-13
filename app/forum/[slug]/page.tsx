@@ -35,11 +35,16 @@ const MAX_IMAGES = 4;
 
 const fixImageUrl = (url: string | null): string | null => {
   if (!url) return null;
-  if (url.startsWith('http://127.0.0.1:8001') || url.startsWith('http://localhost:8000')) {
-    return url.replace(/^https?:\/\/(127\.0\.0\.1:8001|localhost:8000)/, 'https://skinmatch.online');
+  // Извлекаем только путь после /media/
+  const mediaIndex = url.indexOf('/media/');
+  if (mediaIndex !== -1) {
+    return 'https://skinmatch.online' + url.substring(mediaIndex);
   }
-  if (url.startsWith('http')) return url;
-  return `https://skinmatch.online${url}`;
+  // Если уже абсолютный URL с skinmatch.online — оставляем
+  if (url.includes('skinmatch.online')) return url;
+  // Если относительный путь — добавляем домен
+  if (url.startsWith('/')) return 'https://skinmatch.online' + url;
+  return url;
 };
 
 export default function ForumCategoryPage() {
