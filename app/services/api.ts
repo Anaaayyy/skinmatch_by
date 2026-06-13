@@ -72,7 +72,7 @@ interface ForumPost {
 }
 
 
-const API_URL = '/api';
+const API_URL = 'http://annabuil.beget.tech/api';
 const MEDIA_URL = 'http://annabuil.beget.tech';
 
 const getFullImageUrl = (url: string | null): string | null => {
