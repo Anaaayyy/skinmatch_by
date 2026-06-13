@@ -188,7 +188,6 @@ export const brandsAPI = {
       const brands = Array.isArray(response.data) ? response.data : response.data.results || [];
       brands.forEach((brand: Brand) => {
         if (brand.logo) {
-          // Если логотип уже полный URL, оставляем, иначе добавляем MEDIA_URL
           if (typeof brand.logo === 'string' && !brand.logo.startsWith('http')) {
             brand.logo = `${MEDIA_URL}${brand.logo}`;
           }
@@ -222,20 +221,6 @@ interface CreateRoutineData {
   spf: number | null;
 }
 
-// Интерфейс для ответа генерации рутины
-interface GenerateRoutineResponse {
-  routine: {
-    cleansing: RoutineProductData | null;
-    toner: RoutineProductData | null;
-    serum: RoutineProductData | null;
-    cream: RoutineProductData | null;
-    spf: RoutineProductData | null;
-  };
-  time_of_day: string;
-  priority: string;
-  message: string;
-}
-
 // API для рутин
 export const routinesAPI = {
   getAll: (): Promise<AxiosResponse<{ results: Routine[]; count: number }>> => 
@@ -264,29 +249,102 @@ export const authAPI = {
 
 export const profileAPI = {
   get: (): Promise<AxiosResponse<UserProfile>> => 
-    api.get('/profile/me/'),
+    api.get('/profile/me/').then((res: AxiosResponse<UserProfile>) => {
+      if (res.data && res.data.avatar_url) {
+        res.data.avatar_url = getFullImageUrl(res.data.avatar_url);
+      }
+      return res;
+    }),
+    
   update: (data: Partial<UserProfile> | FormData): Promise<AxiosResponse<UserProfile>> => {
     if (data instanceof FormData) {
       return api.put('/profile/update-profile/', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((res: AxiosResponse<UserProfile>) => {
+        if (res.data && res.data.avatar_url) {
+          res.data.avatar_url = getFullImageUrl(res.data.avatar_url);
+        }
+        return res;
       });
     }
-    return api.put('/profile/update-profile/', data);
+    return api.put('/profile/update-profile/', data).then((res: AxiosResponse<UserProfile>) => {
+      if (res.data && res.data.avatar_url) {
+        res.data.avatar_url = getFullImageUrl(res.data.avatar_url);
+      }
+      return res;
+    });
   },
+    
   changePassword: (data: { old_password: string; new_password: string }): Promise<AxiosResponse<{ status: string }>> => 
     api.post('/profile/change-password/', data),
 };
 
 
 export const forumAPI = {
-  getCategories: (): Promise<AxiosResponse<ForumCategory[]>> => api.get('/forum/categories/'),
-  getTopics: (params?: { category?: number; page?: number; search?: string; ordering?: string }): Promise<AxiosResponse<{ results: ForumTopic[]; count: number }>> => api.get('/forum/topics/', { params }),
-  getTopic: (id: number): Promise<AxiosResponse<ForumTopic>> => api.get(`/forum/topics/${id}/`),
-  createTopic: (data: Record<string, unknown>): Promise<AxiosResponse<ForumTopic>> => api.post('/forum/topics/', data),
-  createPost: (data: Record<string, unknown>): Promise<AxiosResponse<ForumPost>> => api.post('/forum/posts/', data),
-  deletePost: (id: number): Promise<AxiosResponse<{ status: string }>> => api.delete(`/forum/posts/${id}/`),
-  likePost: (id: number): Promise<AxiosResponse<{ status: string; likes_count: number }>> => api.post(`/forum/posts/${id}/like/`),
-  uploadImage: (image: string): Promise<AxiosResponse<{ image_id: number; url: string }>> => api.post('/forum/posts/upload-image/', { image }),
+  getCategories: (): Promise<AxiosResponse<ForumCategory[]>> => 
+    api.get('/forum/categories/'),
+    
+  getTopics: (params?: { category?: number; page?: number; search?: string; ordering?: string }): Promise<AxiosResponse<{ results: ForumTopic[]; count: number }>> => 
+    api.get('/forum/topics/', { params }).then((res: AxiosResponse<{ results: ForumTopic[]; count: number }>) => {
+      if (res.data.results) {
+        res.data.results = res.data.results.map((topic: ForumTopic) => ({
+          ...topic,
+          author: {
+            ...topic.author,
+            avatar_url: getFullImageUrl(topic.author.avatar_url),
+          },
+        }));
+      }
+      return res;
+    }),
+    
+  getTopic: (id: number): Promise<AxiosResponse<ForumTopic>> => 
+    api.get(`/forum/topics/${id}/`).then((res: AxiosResponse<ForumTopic>) => {
+      if (res.data) {
+        if (res.data.author) {
+          res.data.author.avatar_url = getFullImageUrl(res.data.author.avatar_url);
+        }
+        if (res.data.posts) {
+          res.data.posts = res.data.posts.map((post: ForumPost) => ({
+            ...post,
+            author: {
+              ...post.author,
+              avatar_url: getFullImageUrl(post.author.avatar_url),
+            },
+            image_url: getFullImageUrl(post.image_url),
+          }));
+        }
+      }
+      return res;
+    }),
+    
+  createTopic: (data: Record<string, unknown>): Promise<AxiosResponse<ForumTopic>> => 
+    api.post('/forum/topics/', data),
+    
+  createPost: (data: Record<string, unknown>): Promise<AxiosResponse<ForumPost>> => 
+    api.post('/forum/posts/', data).then((res: AxiosResponse<ForumPost>) => {
+      if (res.data) {
+        if (res.data.author) {
+          res.data.author.avatar_url = getFullImageUrl(res.data.author.avatar_url);
+        }
+        res.data.image_url = getFullImageUrl(res.data.image_url);
+      }
+      return res;
+    }),
+    
+  deletePost: (id: number): Promise<AxiosResponse<{ status: string }>> => 
+    api.delete(`/forum/posts/${id}/`),
+    
+  likePost: (id: number): Promise<AxiosResponse<{ status: string; likes_count: number }>> => 
+    api.post(`/forum/posts/${id}/like/`),
+    
+  uploadImage: (image: string): Promise<AxiosResponse<{ image_id: number; url: string }>> => 
+    api.post('/forum/posts/upload-image/', { image }).then((res: AxiosResponse<{ image_id: number; url: string }>) => {
+      if (res.data.url) {
+        res.data.url = getFullImageUrl(res.data.url) || res.data.url;
+      }
+      return res;
+    }),
 };
 
 // API для избранного

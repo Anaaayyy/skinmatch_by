@@ -26,8 +26,8 @@ export interface Brand {
   name: string;
   description: string;
   logo?: string | null;
-  website?: string;      // Добавлено
-  shop_url?: string;     // Добавлено
+  website?: string;
+  shop_url?: string;
 }
 
 export interface Category {
@@ -77,6 +77,7 @@ export interface UserProfile {
   problems: string;
   age_range: string;
   allergies: string;
+  avatar_url?: string | null;
 }
 
 export interface Favorite {
@@ -98,7 +99,7 @@ export interface Routine {
   id: number;
   name: string;
   goal: string;
-  time_of_day: string;  // Добавлено
+  time_of_day: string;
   cleansing: number | null;
   cleansing_details?: Product | null;
   toner: number | null;
@@ -112,7 +113,6 @@ export interface Routine {
   created_at: string;
 }
 
-// Для создания рутины используем Partial, но goal должен быть обязательным
 export interface CreateRoutineData {
   name: string;
   goal: string;
