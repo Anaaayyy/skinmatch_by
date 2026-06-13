@@ -1,16 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      unoptimized: true,
-      dangerouslyAllowSVG: true,
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'skinmatch.online',
-          pathname: '/media/**',
-        },
-      ],
-    },
+        unoptimized: true,
+        dangerouslyAllowSVG: true,
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'skinmatch.online',
+            pathname: '/media/**',
+          },
+        ],
+      },
     async rewrites() {
       return [
         {
