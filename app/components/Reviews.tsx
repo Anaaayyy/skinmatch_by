@@ -27,6 +27,15 @@ interface ReviewsProps {
   onRatingUpdate?: (newRating: number) => void;
 }
 
+const fixImageUrl = (url: string | null): string | null => {
+  if (!url) return null;
+  if (url.startsWith('http://127.0.0.1:8001') || url.startsWith('http://localhost:8000')) {
+    return url.replace(/^https?:\/\/(127\.0\.0\.1:8001|localhost:8000)/, 'https://skinmatch.online');
+  }
+  if (url.startsWith('http')) return url;
+  return `https://skinmatch.online${url}`;
+};
+
 export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
   const router = useRouter();
   const updateProductRating = useProductStore((state) => state.updateRating);
@@ -469,7 +478,7 @@ export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' }}>
                   {review.avatar_url ? (
   <img
-    src={review.avatar_url}
+    src={fixImageUrl(review.avatar_url) || ''}
     alt={review.username}
     style={{
       width: '40px',
@@ -504,7 +513,7 @@ export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
               {review.images && review.images.length > 0 && (
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {review.images.map((img) => {
-                    const imageUrl = img.url.startsWith('http') ? img.url : `https://skinmatch.online${img.url}`;
+                    const imageUrl = fixImageUrl(img.url) || '';
                     return (
                       <img
                         key={img.id}

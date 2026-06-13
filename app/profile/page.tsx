@@ -38,6 +38,15 @@ interface RoutineProduct {
   rating: number;
 }
 
+const fixImageUrl = (url: string | null): string | null => {
+  if (!url) return null;
+  if (url.startsWith('http://127.0.0.1:8001') || url.startsWith('http://localhost:8000')) {
+    return url.replace(/^https?:\/\/(127\.0\.0\.1:8001|localhost:8000)/, 'https://skinmatch.online');
+  }
+  if (url.startsWith('http')) return url;
+  return `https://skinmatch.online${url}`;
+};
+
 const skinTypeDisplay: Record<string, string> = {
   'dry': 'Сухая кожа', 'oily': 'Жирная кожа', 'combination': 'Комбинированная кожа',
   'normal': 'Нормальная кожа', 'sensitive': 'Чувствительная кожа',
@@ -151,9 +160,8 @@ export default function ProfilePage() {
       if (userData) {
         setUsername(userData.username || '');
         setEmail(userData.email || '');
-        setAvatarPreview(userData.avatar_url || null);
+        setAvatarPreview(fixImageUrl(userData.avatar_url || null) as string | null);
         
-        // Сохраняем профиль в localStorage через стор
         if (userData.skin_type || userData.problems) {
           useUserProfileStore.getState().loadProfileFromServer({
             skin_type: userData.skin_type || '',
@@ -192,7 +200,6 @@ export default function ProfilePage() {
       setAnswers({ skin_type: editSkin.skin_type, problems: editSkin.problems, age_range: editSkin.age_range, allergies: editSkin.allergies });
       setProfile(prev => prev ? { ...prev, skin_type: skinTypeDisplay[editSkin.skin_type] || editSkin.skin_type, problems: editSkin.problems.join(', '), age_range: editSkin.age_range, allergies: editSkin.allergies.join(', ') } : null);
       
-      // Обновляем localStorage
       useUserProfileStore.getState().loadProfileFromServer({
         skin_type: skinTypeDisplay[editSkin.skin_type] || editSkin.skin_type,
         problems: editSkin.problems.join(', '),
@@ -217,7 +224,7 @@ export default function ProfilePage() {
       const updated = await profileAPI.get();
       const updatedData = updated.data as UserProfileData;
       setProfile(updatedData);
-      setAvatarPreview(updatedData.avatar_url || null);
+      setAvatarPreview(fixImageUrl(updatedData.avatar_url || null) as string | null);
       setAvatarFile(null);
       toast.success('Профиль обновлён');
     } catch (err: unknown) {
@@ -494,7 +501,7 @@ export default function ProfilePage() {
                 if (!product) return null;
                 return (
                   <div key={key} className="step-item">
-                    <div className="step-image">{product.main_image_url ? <img src={product.main_image_url} alt={product.title} /> : step}</div>
+                    <div className="step-image">{product.main_image_url ? <img src={fixImageUrl(product.main_image_url) || ''} alt={product.title} /> : step}</div>
                     <div className="step-body">
                       <div className="step-label">Шаг {step} · {label}</div>
                       <Link href={`/product/${product.id}`} className="step-product-name">{product.title}</Link>

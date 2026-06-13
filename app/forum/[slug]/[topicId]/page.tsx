@@ -34,7 +34,14 @@ interface Topic {
 
 const MAX_IMAGES = 4;
 
-
+const fixImageUrl = (url: string | null): string | null => {
+  if (!url) return null;
+  if (url.startsWith('http://127.0.0.1:8001') || url.startsWith('http://localhost:8000')) {
+    return url.replace(/^https?:\/\/(127\.0\.0\.1:8001|localhost:8000)/, 'https://skinmatch.online');
+  }
+  if (url.startsWith('http')) return url;
+  return `https://skinmatch.online${url}`;
+};
 
 export default function TopicPage() {
   const params = useParams();
@@ -90,11 +97,11 @@ export default function TopicPage() {
 
   const handleReply = async () => {
     const checkRes = await moderationAPI.checkText(replyContent);
-if (checkRes.data.has_bad_words) {
-  toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
-  setIsSubmitting(false);
-  return;
-}
+    if (checkRes.data.has_bad_words) {
+      toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
+      setIsSubmitting(false);
+      return;
+    }
     if (!replyContent.trim()) { toast.error('Напишите сообщение'); return; }
     setIsSubmitting(true);
     try {
@@ -147,7 +154,7 @@ if (checkRes.data.has_bad_words) {
       <div style={{ display: 'flex', gap: compact ? 4 : 6, flexWrap: 'wrap', marginBottom: compact ? 6 : 10 }}>
         {images.map(img => (
           <div key={img.id} style={{ borderRadius: compact ? 8 : 10, overflow: 'hidden', border: '1px solid #f3f4f6', width: size, height: size, flexShrink: 0 }}>
-            <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            <img src={fixImageUrl(img.url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           </div>
         ))}
       </div>
@@ -172,7 +179,7 @@ if (checkRes.data.has_bad_words) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {topic.author.avatar_url ? <img src={topic.author.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 15, fontWeight: 700, color: '#db2777' }}>{topic.author.username.charAt(0).toUpperCase()}</span>}
+              {topic.author.avatar_url ? <img src={fixImageUrl(topic.author.avatar_url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 15, fontWeight: 700, color: '#db2777' }}>{topic.author.username.charAt(0).toUpperCase()}</span>}
             </div>
             <div>
               <div style={{ fontWeight: 600, fontSize: 14, color: '#1f2937' }}>{topic.author.username}</div>
@@ -191,7 +198,7 @@ if (checkRes.data.has_bad_words) {
             <div key={post.id}>
               <div style={{ display: 'flex', gap: 14 }}>
                 <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {post.author.avatar_url ? <img src={post.author.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 16, fontWeight: 700, color: '#db2777' }}>{post.author.username.charAt(0).toUpperCase()}</span>}
+                  {post.author.avatar_url ? <img src={fixImageUrl(post.author.avatar_url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 16, fontWeight: 700, color: '#db2777' }}>{post.author.username.charAt(0).toUpperCase()}</span>}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -236,14 +243,14 @@ if (checkRes.data.has_bad_words) {
                 <div style={{ marginLeft: 21, marginTop: 12, position: 'relative' }}>
                   <div style={{ position: 'absolute', left: 0, top: 0, bottom: 20, width: 2, background: 'linear-gradient(to bottom, #fbcfe8, #fdf2f8)', borderRadius: 1 }} />
                   <div style={{ paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 16 }}>
-                    {postReplies.map((reply, idx) => {
+                    {postReplies.map((reply) => {
                       const isReplyOwner = currentUserId === reply.author.id;
                       return (
                         <div key={reply.id} style={{ position: 'relative' }}>
                           <div style={{ position: 'absolute', left: -20, top: 16, width: 20, height: 2, background: '#fbcfe8' }} />
                           <div style={{ display: 'flex', gap: 10 }}>
                             <div style={{ width: 28, height: 28, borderRadius: 10, background: '#fdf2f8', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              {reply.author.avatar_url ? <img src={reply.author.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 12, fontWeight: 700, color: '#db2777' }}>{reply.author.username.charAt(0).toUpperCase()}</span>}
+                              {reply.author.avatar_url ? <img src={fixImageUrl(reply.author.avatar_url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 12, fontWeight: 700, color: '#db2777' }}>{reply.author.username.charAt(0).toUpperCase()}</span>}
                             </div>
                             <div style={{ flex: 1, minWidth: 0 }}>
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
