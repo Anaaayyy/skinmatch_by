@@ -48,7 +48,7 @@ export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8000/api/reviews/?product=${productId}`);
+      const response = await fetch(`https://skinmatch.online/api/reviews/?product=${productId}`);
       const data = await response.json();
       let reviewsData = data.results || [];
       
@@ -73,7 +73,7 @@ export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
       reader.onloadend = async () => {
         try {
           const base64String = reader.result as string;
-          const response = await fetch('http://localhost:8000/api/reviews/upload_image/', {
+          const response = await fetch('https://skinmatch.online/api/reviews/upload_image/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -118,13 +118,12 @@ export default function Reviews({ productId, onRatingUpdate }: ReviewsProps) {
       return;
     }
     
-    // Проверка на запрещённые слова
-const checkRes = await moderationAPI.checkText(newReview.text);
-if (checkRes.data.has_bad_words) {
-  toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
-  setIsSubmitting(false);
-  return;
-}
+    const checkRes = await moderationAPI.checkText(newReview.text);
+    if (checkRes.data.has_bad_words) {
+      toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
+      setIsSubmitting(false);
+      return;
+    }
     if (!newReview.text.trim()) {
       toast.error('Напишите текст отзыва');
       return;
@@ -139,7 +138,7 @@ if (checkRes.data.has_bad_words) {
         if (imageId) uploadedImageIds.push(imageId);
       }
       
-      const response = await fetch('http://localhost:8000/api/reviews/', {
+      const response = await fetch('https://skinmatch.online/api/reviews/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,18 +157,14 @@ if (checkRes.data.has_bad_words) {
         setNewReview({ rating: 5, text: '' });
         setUploadedImages([]);
         
-        // Обновляем список отзывов
         await fetchReviews();
         
-        // Получаем обновленный рейтинг продукта
-        const updatedProduct = await fetch(`http://localhost:8000/api/products/${productId}/`);
+        const updatedProduct = await fetch(`https://skinmatch.online/api/products/${productId}/`);
         const productData = await updatedProduct.json();
         const newRating = productData.average_rating || productData.rating;
         
-        // Обновляем store
         updateProductRating(productId, newRating);
         
-        // Уведомляем родительский компонент
         if (onRatingUpdate) {
           onRatingUpdate(newRating);
         }
@@ -509,7 +504,7 @@ if (checkRes.data.has_bad_words) {
               {review.images && review.images.length > 0 && (
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   {review.images.map((img) => {
-                    const imageUrl = img.url.startsWith('http') ? img.url : `http://localhost:8000${img.url}`;
+                    const imageUrl = img.url.startsWith('http') ? img.url : `https://skinmatch.online${img.url}`;
                     return (
                       <img
                         key={img.id}
