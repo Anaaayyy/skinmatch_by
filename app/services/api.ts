@@ -72,8 +72,8 @@ interface ForumPost {
 }
 
 
-const API_URL = '/api';
-const MEDIA_URL = 'http://annabuil.beget.tech';
+const API_URL = 'https://skinmatch.online/api';
+const MEDIA_URL = 'https://skinmatch.online';
 
 const getFullImageUrl = (url: string | null): string | null => {
   if (!url) return null;

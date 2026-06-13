@@ -5,8 +5,8 @@ const nextConfig = {
       dangerouslyAllowSVG: true,
       remotePatterns: [
         {
-          protocol: 'http',
-          hostname: 'annabuil.beget.tech',
+          protocol: 'https',
+          hostname: 'skinmatch.online',
           pathname: '/media/**',
         },
       ],
