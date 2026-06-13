@@ -11,6 +11,22 @@ const nextConfig = {
         },
       ],
     },
+    async rewrites() {
+      return [
+        {
+          source: '/api/:path*',
+          destination: 'http://annabuil.beget.tech/api/:path*',
+        },
+        {
+          source: '/media/:path*',
+          destination: 'http://annabuil.beget.tech/media/:path*',
+        },
+        {
+          source: '/admin/:path*',
+          destination: 'http://annabuil.beget.tech/admin/:path*',
+        },
+      ];
+    },
   }
   
   module.exports = nextConfig
