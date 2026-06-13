@@ -33,7 +33,14 @@ interface ForumCategory {
 
 const MAX_IMAGES = 4;
 
-
+const fixImageUrl = (url: string | null): string | null => {
+  if (!url) return null;
+  if (url.startsWith('http://127.0.0.1:8001') || url.startsWith('http://localhost:8000')) {
+    return url.replace(/^https?:\/\/(127\.0\.0\.1:8001|localhost:8000)/, 'https://skinmatch.online');
+  }
+  if (url.startsWith('http')) return url;
+  return `https://skinmatch.online${url}`;
+};
 
 export default function ForumCategoryPage() {
   const params = useParams();
@@ -104,11 +111,11 @@ export default function ForumCategoryPage() {
 
   const handleCreateTopic = async () => {
     const checkRes = await moderationAPI.checkText(newTitle + ' ' + newContent);
-if (checkRes.data.has_bad_words) {
-  toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
-  setIsCreating(false);
-  return;
-}
+    if (checkRes.data.has_bad_words) {
+      toast.error(checkRes.data.message || 'Текст содержит запрещённые слова');
+      setIsCreating(false);
+      return;
+    }
     if (!newTitle.trim()) { toast.error('Введите заголовок'); return; }
     if (!newContent.trim()) { toast.error('Введите текст'); return; }
     if (!category) return;
@@ -229,7 +236,7 @@ if (checkRes.data.has_bad_words) {
             <div style={{ padding: '22px 26px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
                 <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'linear-gradient(135deg, #fdf2f8, #fce7f3)', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {topic.author.avatar_url ? <img src={topic.author.avatar_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 16, fontWeight: 700, color: '#db2777' }}>{topic.author.username.charAt(0).toUpperCase()}</span>}
+                  {topic.author.avatar_url ? <img src={fixImageUrl(topic.author.avatar_url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 16, fontWeight: 700, color: '#db2777' }}>{topic.author.username.charAt(0).toUpperCase()}</span>}
                 </div>
                 <div>
                   <div style={{ fontWeight: 600, fontSize: 15, color: '#1f2937' }}>{topic.author.username}</div>
@@ -252,7 +259,7 @@ if (checkRes.data.has_bad_words) {
                 <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(topic.images.length, 3)}, 1fr)`, gap: 8, marginBottom: 14 }}>
                   {topic.images.slice(0, 3).map(img => (
                     <div key={img.id} style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #f3f4f6', aspectRatio: '1' }}>
-                      <img src={img.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <img src={fixImageUrl(img.url) || ''} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     </div>
                   ))}
                 </div>
