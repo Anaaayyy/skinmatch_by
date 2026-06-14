@@ -30,6 +30,7 @@ interface Step {
   name: string;
   description: string;
   keywords: string[];
+  exclude: string[];
 }
 
 export default function RoutinePage() {
@@ -52,11 +53,11 @@ export default function RoutinePage() {
   const [showNameModal, setShowNameModal] = useState(false);
 
   const steps: Step[] = [
-    { id: 'cleansing', name: 'Очищение', description: 'Выберите средство для умывания', keywords: ['очищ', 'гель', 'пенк'] },
-    { id: 'toner', name: 'Тонизирование', description: 'Выберите тоник или лосьон', keywords: ['тоник'] },
-    { id: 'serum', name: 'Сыворотка', description: 'Выберите сыворотку', keywords: ['сыворотк'] },
-    { id: 'cream', name: 'Увлажнение', description: 'Выберите крем', keywords: ['крем'] },
-    { id: 'spf', name: 'SPF защита', description: 'Выберите SPF средство', keywords: ['spf'] },
+    { id: 'cleansing', name: 'Очищение', description: 'Выберите средство для умывания', keywords: ['очищ', 'гель', 'пенк', 'мусс'], exclude: ['тоник', 'сыворотк', 'крем', 'spf', 'солнце'] },
+    { id: 'toner', name: 'Тонизирование', description: 'Выберите тоник или лосьон', keywords: ['тоник', 'тонер'], exclude: ['очищ', 'гель', 'пенк', 'сыворотк', 'крем', 'spf'] },
+    { id: 'serum', name: 'Сыворотка', description: 'Выберите сыворотку', keywords: ['сыворотк', 'serum'], exclude: ['очищ', 'гель', 'пенк', 'тоник', 'крем', 'spf'] },
+    { id: 'cream', name: 'Увлажнение', description: 'Выберите крем', keywords: ['крем', 'флюид', 'эмульс'], exclude: ['очищ', 'гель', 'пенк', 'тоник', 'сыворотк', 'spf', 'солнцезащит', 'солнце', 'bb', 'cc', 'тональ', 'санскрин'] },
+    { id: 'spf', name: 'SPF защита', description: 'Выберите SPF средство', keywords: ['spf', 'солнцезащит', 'санскрин', 'sunscreen', 'sun'], exclude: ['очищ', 'гель', 'пенк', 'тоник'] },
   ];
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function RoutinePage() {
       setSkinProfile(profileRes.data);
       const products = productsRes.data.results || [];
       setAllProducts(products);
-      filterProducts(profileRes.data, products, steps[0].keywords);
+      filterProducts(profileRes.data, products, steps[0]);
     } catch (error) {
       console.error('Error loading data:', error);
       toast.error('Ошибка загрузки данных');
@@ -88,15 +89,25 @@ export default function RoutinePage() {
     }
   };
 
-  const filterProducts = (profile: SkinProfile, products: Product[], keywords: string[]): void => {
+  const filterProducts = (profile: SkinProfile, products: Product[], step: Step): void => {
     let filtered = [...products];
     
+    // Включаем только те, где есть ключевые слова
     filtered = filtered.filter(p => {
       if (!p.title && !p.category_name) return false;
       const text = `${p.title} ${p.category_name}`.toLowerCase();
-      return keywords.some(kw => text.includes(kw));
+      return step.keywords.some(kw => text.includes(kw));
     });
     
+    // Исключаем те, где есть слова из exclude
+    if (step.exclude.length > 0) {
+      filtered = filtered.filter(p => {
+        const text = `${p.title} ${p.category_name}`.toLowerCase();
+        return !step.exclude.some(kw => text.includes(kw));
+      });
+    }
+    
+    // Фильтр по типу кожи
     if (profile?.skin_type) {
       const skinType = profile.skin_type.toLowerCase();
       filtered = filtered.filter(p => {
@@ -106,7 +117,8 @@ export default function RoutinePage() {
       });
     }
     
-    if (profile?.problems && steps[currentStep].id !== 'cleansing' && steps[currentStep].id !== 'spf') {
+    // Фильтр по проблемам (кроме очищения и SPF)
+    if (profile?.problems && step.id !== 'cleansing' && step.id !== 'spf') {
       const problems = profile.problems.split(',').map(p => p.trim().toLowerCase());
       filtered = filtered.filter(p => {
         if (!p.solves_problems) return true;
@@ -127,7 +139,7 @@ export default function RoutinePage() {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
       if (skinProfile) {
-        filterProducts(skinProfile, allProducts, steps[nextStep].keywords);
+        filterProducts(skinProfile, allProducts, steps[nextStep]);
       }
     } else {
       setShowNameModal(true);
@@ -139,7 +151,7 @@ export default function RoutinePage() {
       const prevStep = currentStep - 1;
       setCurrentStep(prevStep);
       if (skinProfile) {
-        filterProducts(skinProfile, allProducts, steps[prevStep].keywords);
+        filterProducts(skinProfile, allProducts, steps[prevStep]);
       }
     }
   };
@@ -149,7 +161,7 @@ export default function RoutinePage() {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
       if (skinProfile) {
-        filterProducts(skinProfile, allProducts, steps[nextStep].keywords);
+        filterProducts(skinProfile, allProducts, steps[nextStep]);
       }
     } else {
       setShowNameModal(true);
